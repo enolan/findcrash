@@ -1,14 +1,14 @@
 name:                findcrash
 version:             0.1.0.0
-synopsis:            Simple project template from stack
-description:         Please see README.md
-homepage:            https://github.com/githubuser/findcrash#readme
-license:             BSD3
+synopsis:            Find intermittent crashes
+description:         Blah
+homepage:            https://github.com/enolan/findcrash
+license:             GPL3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2016 Author name here
-category:            Web
+author:              Echo Nolan
+maintainer:          echo@echonolan.net
+copyright:           2016 Echo Nolan
+category:            Debug
 build-type:          Simple
 cabal-version:       >=1.10
 
