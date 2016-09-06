@@ -13,7 +13,7 @@ main = do
   [procname] <- getArgs
   time <- map (\c -> if c == ':' then '_' else c) . show <$> getCurrentTime
   let dir = "logs" </> time
-  createDirectoryIfMissing True $ dir
+  createDirectoryIfMissing True dir
   putStrLn $ "Logs being written to " ++ dir
   go procname dir 1
 
