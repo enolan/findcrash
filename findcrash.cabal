@@ -3,7 +3,7 @@ version:             0.1.0.0
 synopsis:            Find intermittent crashes
 description:         Blah
 homepage:            https://github.com/enolan/findcrash
-license:             GPL3
+license:             GPL-3
 license-file:        LICENSE
 author:              Echo Nolan
 maintainer:          echo@echonolan.net
