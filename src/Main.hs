@@ -1,4 +1,4 @@
-module Main where
+module Main(main) where
 
 import Data.Time
 import Path
@@ -18,24 +18,31 @@ main = do
   putStrLn $ "Logs being written to " ++ show dir
   go procname dir 1
 
-go :: String -> Path b Dir -> Int -> IO ()
-go procname dir count = do
-  stdOutRel <- parseRelFile $ "stdout-" ++ show count
-  stdErrRel <- parseRelFile $ "stderr-" ++ show count
+runLogged :: String -> [String] -> Path b Dir -> IO ExitCode
+runLogged cmd params dir = do
+  createDirIfMissing False dir
+  stdOutRel <- parseRelFile "stdout"
+  stdErrRel <- parseRelFile "stderr"
   let stdoutpath = dir </> stdOutRel
       stderrpath = dir </> stdErrRel
-  if count > 200 then putStrLn "200 attempts without failure, exiting." else
-    withFile (toFilePath stdoutpath) WriteMode $ \out ->
+  withFile (toFilePath stdoutpath) WriteMode $ \out ->
       withFile (toFilePath stderrpath) WriteMode $ \err -> do
-        (_, _, _, ph) <- createProcess $ (proc procname [])
+        (_, _, _, ph) <- createProcess $ (proc cmd params)
           {std_out = UseHandle out, std_err = UseHandle err}
-        exit <- waitForProcess ph
-        let continue = do
+        waitForProcess ph
+
+go :: String -> Path b Dir -> Int -> IO ()
+go procname dir count =
+  if count > 200
+  then putStrLn "200 attempts without failure, exiting."
+  else do
+    dirEx <- parseRelDir $ show count
+    exit <- runLogged procname [] (dir </> dirEx)
+    let continue = do
               putStrLn $ "No failure, attempt " ++ show count
               go procname dir (count + 1)
-        case exit of
-          ExitSuccess -> continue
-          ExitFailure x | x < 0 -> do
-            putStrLn $ "Attempt " ++ show count ++ " failed!"
-            putStrLn $ "Logs in " ++ show stdoutpath ++ " and " ++ show stderrpath
-                      | otherwise -> continue
+    case exit of
+      ExitSuccess -> continue
+      ExitFailure x | x < 0 ->
+                        putStrLn $ "Attempt " ++ show count ++ " failed!"
+                    | otherwise -> continue

@@ -18,5 +18,5 @@ executable findcrash
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5, filepath, path, path-io,
                        process, time
-  ghc-options:         -Wall
+  ghc-options:         -Wall -fdefer-typed-holes
   default-extensions:  TemplateHaskell
